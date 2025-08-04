@@ -1,59 +1,41 @@
-# AngularHardRefreshDetection
+# Angular Hard Refresh Detection
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.4.
+This project is a small Angular application that detects whether a page load was triggered by a hard browser refresh (e.g. F5 or Ctrl‑R) or by in-app navigation. The `HardRefreshService` examines the browser's Performance Navigation API to make this determination.
 
-## Development server
-
-To start a local development server, run:
+## Local development
 
 ```bash
-ng serve
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open <http://localhost:4200> to see the app in action. Changes in the source code trigger a live reload.
 
-## Code scaffolding
+## How it works
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+`HardRefreshService` checks `performance.getEntriesByType('navigation')` and falls back to the legacy `performance.navigation` API. If the navigation type is reported as `reload`, the service exposes that state through `isHardRefresh()` so components can react to a full page reload.
 
 ## Building
 
-To build the project run:
-
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The optimized application is emitted to `dist/angular-hard-refresh-detection`.
 
-## Running unit tests
+## Continuous deployment with GitHub Pages
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+The repository is configured to publish the site using [GitHub Pages](https://pages.github.com/). A GitHub Actions workflow builds the project and deploys the contents of `dist/angular-hard-refresh-detection` whenever the `main` branch receives a push.
 
-```bash
-ng test
+To enable Pages on your fork:
+
+1. Open **Settings → Pages** in this repository.
+2. Under **Build and deployment**, choose **GitHub Actions**.
+
+The workflow file lives at `.github/workflows/deploy.yml` and runs:
+
+```yaml
+npm run build -- --configuration production --base-href "/angular-hard-refresh-detection/"
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Adjust the `baseHref` if you rename the repository.
